@@ -15,12 +15,12 @@
 
 #--------------------------------------description------------------------------------------------#
 
-nanoFluid4Foam is a toolbox designed for OpenFOAM to produce nanofluids.
+hemodynamic4Foam is a toolbox designed for OpenFOAM to simulate hemodynamic problems.
 
 
 ### Where do I start? ###
 
-Start with the [nanoFluid4Foam userGuide](documentation/nanoFluid4FoamUserGuide), located in the documentation directory.
+Start with the [hemodynamic4Foam userGuide](), located in the documentation directory.
 
 
 
@@ -29,7 +29,7 @@ Start with the [nanoFluid4Foam userGuide](documentation/nanoFluid4FoamUserGuide)
 To get setup, you must first install OpenFOAM, using following version:
 - foam-extend-4.1
 
-Once a version of OpenFOAM has been installed, download nanoFluid4Foam and then run the enclosed `Allwmake` script to compile nanoFluid4Foam.
+Once a version of OpenFOAM has been installed, download hemodynamic4Foam and then run the enclosed `Allwmake` script to compile hemodynamic4Foam.
 
 
 
