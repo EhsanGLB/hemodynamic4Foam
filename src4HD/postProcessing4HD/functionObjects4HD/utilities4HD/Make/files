@@ -1,0 +1,13 @@
+helicity4HD/helicity4HD.C
+helicity4HD/helicity4HDFunctionObject.C
+
+LNH4HD/LNH4HD.C
+LNH4HD/LNH4HDFunctionObject.C
+
+WSS4HD/WSS4HD.C
+WSS4HD/WSS4HDFunctionObject.C
+
+magWSS4HD/magWSS4HD.C
+magWSS4HD/magWSS4HDFunctionObject.C
+
+LIB = $(FOAM_USER_LIBBIN)/libutilityFunctionObjects4HD

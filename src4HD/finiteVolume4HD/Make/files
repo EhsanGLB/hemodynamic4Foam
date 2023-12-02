@@ -1,0 +1,12 @@
+fields4HDDir = fields4HD
+fvPatchFields4HDDir = $(fields4HDDir)/fvPatchFields4HD
+derived4HDDir = $(fvPatchFields4HDDir)/derived4HD
+$(derived4HDDir)/parabolicRadialVelocityBC4HD/parabolicRadialVelocityBC4HD.C
+$(derived4HDDir)/powerLawRadialVelocityBC4HD/powerLawRadialVelocityBC4HD.C
+$(derived4HDDir)/BuongiornoBC4HD/BuongiornoBC4HD.C
+$(derived4HDDir)/uniformVelocityWaveformBC4HD/uniformVelocityWaveformBC4HD.C
+$(derived4HDDir)/parabolicRadialVelocityWaveformBC4HD/parabolicRadialVelocityWaveformBC4HD.C
+$(derived4HDDir)/womersleyRadialVelocityWaveformBC4HD/womersleyRadialVelocityWaveformBC4HD.C
+$(derived4HDDir)/WKBC4HD/WKBC4HD.C
+
+LIB = $(FOAM_USER_LIBBIN)/libBC4HD

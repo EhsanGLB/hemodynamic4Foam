@@ -1,0 +1,3 @@
+primitives4HD/complex4HD/complex4HD.C
+
+LIB = $(FOAM_USER_LIBBIN)/libfoam4HD

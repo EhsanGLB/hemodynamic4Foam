@@ -1,0 +1,10 @@
+viscosityModels4HD/Casson/Casson.C
+viscosityModels4HD/Krieger5/Krieger5.C
+viscosityModels4HD/KriegerDougherty/KriegerDougherty.C
+viscosityModels4HD/Quemada/Quemada.C
+viscosityModels4HD/Yeleswarapu/Yeleswarapu.C
+viscosityModels4HD/Ameenuddin/Ameenuddin.C
+viscosityModels4HD/Eckmann/Eckmann.C
+viscosityModels4HD/WalburnSchneck/WalburnSchneck.C
+
+LIB = $(FOAM_USER_LIBBIN)/libincompressibleTransportModels4HD
