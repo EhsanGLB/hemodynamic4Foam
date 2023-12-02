@@ -1,0 +1,27 @@
+#!/bin/sh
+cd ${0%/*} || exit 1    # Run from this directory
+
+# Source tutorial run functions
+. $WM_PROJECT_DIR/bin/tools/RunFunctions
+
+# Get application name from directory
+application=icoFsiFoam
+
+./Allclean
+cd fluid
+#rm -r constant/polyMesh/
+surfaceFeatureEdges constant/triSurface/STLansysCloseASCII.stl bezi.fms
+#cartesianMesh
+tetMesh 
+autoPatch 55 -overwrite
+createPatch -overwrite
+transformPoints -scale '(0.001 0.001 0.001)'
+checkMesh
+
+
+
+cd ../solid
+extrudeMesh
+autoPatch 70 -overwrite
+createPatch -overwrite
+checkMesh

@@ -1,0 +1,83 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       polyBoundaryMesh;
+    location    "constant/polyMesh";
+    object      boundary;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+10
+(
+    auto1
+    {
+        type            patch;
+        nFaces          1;
+        startFace       1306567;
+    }
+    auto2
+    {
+        type            patch;
+        nFaces          1;
+        startFace       1306568;
+    }
+    auto3
+    {
+        type            patch;
+        nFaces          1;
+        startFace       1306569;
+    }
+    consoleFluid
+    {
+        type            wall;
+        nFaces          45300;
+        startFace       1306570;
+    }
+    inletFluid
+    {
+        type            patch;
+        nFaces          2073;
+        startFace       1351870;
+    }
+    outlet1Fluid
+    {
+        type            patch;
+        nFaces          1024;
+        startFace       1353943;
+    }
+    outlet2Fluid
+    {
+        type            patch;
+        nFaces          487;
+        startFace       1354967;
+    }
+    outlet3Fluid
+    {
+        type            patch;
+        nFaces          312;
+        startFace       1355454;
+    }
+    outlet4Fluid
+    {
+        type            patch;
+        nFaces          427;
+        startFace       1355766;
+    }
+    outlet5Fluid
+    {
+        type            patch;
+        nFaces          284;
+        startFace       1356193;
+    }
+)
+
+
+// ************************************************************************* //

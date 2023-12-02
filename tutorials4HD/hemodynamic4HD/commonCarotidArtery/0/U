@@ -1,0 +1,69 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       volVectorField;
+    object      U;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+dimensions		[0 1 -1 0 0 0 0];
+
+internalField		uniform (0 0 0);
+
+boundaryField
+{
+    CCA
+    {
+/*
+        type           fixedValue;
+        value          uniform (0 0 0.2);
+*/
+
+	type		uniformVelocityWaveformBC4HD;
+        amplitude       0.1;
+        frequency       1.2;
+        lenDir          (0 0 1);
+        fourierSeriesType	real;
+        cosCoeffs	(1.0    1.0    1.0);
+        sinCoeffs	(0.0    0.0    0.0);
+    }
+
+    ECA
+    {
+	type		zeroGradient;
+    }
+
+    ICA
+    {
+	type		zeroGradient;
+    }
+
+    WALL
+    {
+        type           fixedValue;
+        value          uniform (0 0 0);
+    }
+
+    APEX
+    {
+        type           fixedValue;
+        value          uniform (0 0 0);
+    }
+
+    SINUS
+    {
+        type           fixedValue;
+        value          uniform (0 0 0);
+    }
+}
+
+
+// ************************************************************************* //

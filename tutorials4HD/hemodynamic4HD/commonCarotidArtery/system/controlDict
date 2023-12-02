@@ -1,0 +1,195 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | foam-extend: Open Source CFD                    |
+|  \\    /   O peration     | Version:     4.1                                |
+|   \\  /    A nd           | Web:         http://www.foam-extend.org         |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      controlDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+libs
+(
+    "liblduSolvers.so"
+    "libincompressibleTransportModels4HD.so"
+    "libBC4HD.so"
+);
+
+application     hemodynamic4HD;
+
+startFrom       startTime;
+
+startTime       0;
+
+stopAt          endTime;
+
+endTime         0.8;
+
+deltaT          0.0001;
+
+writeControl    adjustableRunTime;
+
+writeInterval   0.02;
+
+purgeWrite      0;
+
+writeFormat     ascii;
+
+writePrecision  6;
+
+writeCompression compressed;
+
+timeFormat      general;
+
+timePrecision   6;
+
+runTimeModifiable yes;
+
+adjustTimeStep  yes;
+
+maxCo           2;
+
+maxDeltaT	1.0;
+
+/*
+InfoSwitches
+{
+    writePrecision  6;
+    writeJobInfo    0;
+    allowSystemOperations 1;
+}
+
+functions
+{
+    helicity4HDFunc
+    {
+        type			helicity4HD;
+        functionObjectLibs	("libutilityFunctionObjects4HD.so");
+        outputControl		outputTime;
+    }
+
+    LNH4HDFunc
+    {
+        type			LNH4HD;
+        functionObjectLibs	("libutilityFunctionObjects4HD.so");
+        outputControl		outputTime;
+    }
+
+    WSS4HDFunc
+    {
+        type			WSS4HD;
+        functionObjectLibs	("libutilityFunctionObjects4HD.so");
+        outputControl		outputTime;
+    }
+
+    magWSS4HDFunc
+    {
+        type			magWSS4HD;
+        functionObjectLibs	("libutilityFunctionObjects4HD.so");
+        outputControl		outputTime;
+    }
+
+    postProcess
+    {
+        functionObjectLibs	("libutilityFunctionObjects.so");
+        type			coded;
+        enabled			true;
+        outputControl		outputTime;//timeStep;
+        redirectType		postProcess;
+
+        codeInclude
+        #{
+            #include "fvCFD.H"
+            #include "singlePhaseTransportModel.H"
+            #include "RASModel.H"
+        #};
+
+        codeOptions
+        #{
+            -I$(LIB_SRC)/turbulenceModels \
+            -I$(LIB_SRC)/turbulenceModels/incompressible/RAS/RASModel \
+            -I$(LIB_SRC)/transportModels \
+            -I$(LIB_SRC)/transportModels/incompressible/singlePhaseTransportModel \
+            -I$(LIB_SRC)/finiteVolume/lnInclude
+        #};
+
+        codeLibs
+        #{
+            -lincompressibleRASModels \
+            -lincompressibleTransportModels \
+            -lincompressibleTurbulenceModel \
+            -lfiniteVolume \
+            -llduSolvers
+        #};
+
+        code
+        #{
+            std::ofstream output;
+            output.open("postProcess.txt",std::ofstream::app);
+
+            //- lookup fields
+            const volVectorField& U = mesh().lookupObject<volVectorField>("U");
+            const surfaceScalarField& phi = mesh().lookupObject<surfaceScalarField>("phi");
+            const fvMesh& mesh = U.mesh();
+
+            singlePhaseTransportModel laminarTransport(U, phi);
+            dimensionedScalar rho(laminarTransport.lookup("rho"));
+            autoPtr<Foam::incompressible::RASModel> model(Foam::incompressible::RASModel::New(U, phi, laminarTransport));
+            const volSymmTensorField Reff(model->devReff());
+
+
+            //- calculate post processing parameters, including helicity, LNH, WSS, magWSS
+            IOobject helicityHeader("helicity", mesh.time().timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE);
+            volScalarField helicity(helicityHeader, mesh, dimensionedScalar("helicity",  dimLength/sqr(dimTime), 0.0));
+            helicity = U & (fvc::curl(U));
+            helicity.write();
+
+
+            dimensionedScalar epsLNH("epsLNH",dimLength/sqr(dimTime), 1e-64);
+            IOobject LNHHeader("LNH", mesh.time().timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE);
+            volScalarField LNH(LNHHeader, mesh, dimensionedScalar("LNH",  dimless, 0.0));
+            LNH = ( U & (fvc::curl(U)) ) / ( mag(U) * mag(fvc::curl(U)) + epsLNH );
+            LNH.write();
+
+
+            IOobject WSSHeader("WSS", mesh.time().timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE);
+            volVectorField WSS(WSSHeader, mesh, dimensionedVector("WSS",  dimMass/dimLength/sqr(dimTime), vector::zero));
+            forAll(WSS.boundaryField(), patchI)
+            {
+                WSS.boundaryField()[patchI] = rho.value()*(-mesh.Sf().boundaryField()[patchI]/mesh.magSf().boundaryField()[patchI]) & Reff.boundaryField()[patchI];
+            }
+            WSS.write();
+
+
+            IOobject magWSSHeader("magWSS", mesh.time().timeName(), mesh, IOobject::NO_READ, IOobject::AUTO_WRITE);
+            volScalarField magWSS(WSSHeader, mesh, dimensionedScalar("magWSS", dimMass/dimLength/sqr(dimTime), 0.0));
+            magWSS = mag(WSS);
+            magWSS.write();
+
+
+            //- calculate flow rate
+            label CCAID_ = mesh.boundaryMesh().findPatchID("CCA");
+            scalar CCAFlowRate_ = sum(phi.boundaryField()[CCAID_]);
+            scalar CCAArea_ = sum(mesh.magSf().boundaryField()[CCAID_]);
+            scalar CCAVelocity_ = CCAFlowRate_/CCAArea_;
+            Info << "CCAFlowRate = " << CCAFlowRate_ << "\t\t" << "CCAVelocity = " << CCAVelocity_ << "\n";
+
+
+            //- lookup current time and deltaT
+            scalar t_ = mesh.time().value();
+            scalar deltaT_ = mesh.time().deltaT().value();
+
+
+            output << t_ << "\t\t" << CCAFlowRate_ << "\t\t" << CCAVelocity_ << "\n";
+            output.close();
+        #};
+    }
+}
+*/
+// ************************************************************************* //
